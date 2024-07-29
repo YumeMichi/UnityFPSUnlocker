@@ -48,13 +48,13 @@ Resolution Unity::GetResolution() {
 
 void Unity::SetResolution(float scale) {
     Resolution resolution = GetSystemExtImpl();
-    if (scale > 0 && resolution.m_Width > 0) {
+    if ((SetResolution_Internal || SetResolution_Injected_Internal) && scale > 0 && resolution.m_Width > 0) {
         auto target_width = static_cast<int32_t>(resolution.m_Width * scale);
         auto target_height = static_cast<int32_t>(resolution.m_Height * scale);
         LOG("Set resolution: %dx%d", target_width, target_height);
 
-        RefreshRate refreshRate;
         if (SetResolution_Injected_Internal) {
+            RefreshRate refreshRate;
             SetResolution_Injected_Internal(target_width, target_height, 1, &refreshRate);
             Utility::NopFunc(reinterpret_cast<unsigned char*>(SetResolution_Injected_Internal));
         }
